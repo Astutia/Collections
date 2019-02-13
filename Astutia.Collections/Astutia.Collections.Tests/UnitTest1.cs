@@ -1,6 +1,8 @@
 using System.Collections.Generic;
+using Astutia.Collections.Storage;
 using Astutia.Collections.Tree;
 using Microsoft.VisualStudio.TestTools.UnitTesting;
+using System;
 
 namespace Astutia.Collections.Tests
 {
@@ -10,16 +12,23 @@ namespace Astutia.Collections.Tests
         [TestMethod]
         public void TestMethod1()
         {
-            IMyNode<string> node = new MyNode<string>() { Value = "elo :D", Name = 1 };
+            IMyNode<string, string> node = new MyNode<string, string>() { Value = "Elo :D" };
+            
         }
     }
 
-    public interface IMyNode<TValue> : INodeWithValue<IMyNode<TValue>, int, TValue>
+    public interface IMyNode<TKey, TValue> : INode<IMyNode<TKey, TValue>, IDictionaryStorage<TKey, IMyNode<TKey, TValue>>>
     {
     }
 
-    public class MyNode<TValue> : NodeWithValue<IMyNode<TValue>, int, TValue>,
-                                  IMyNode<TValue>
+    public class MyNode<TKey, TValue> : NodeBase<IMyNode<TKey, TValue>, IDictionaryStorage<TKey, IMyNode<TKey, TValue>>>,
+                                        IMyNode<TKey, TValue>
     {
+        public MyNode()
+            : base(new DictionaryStorage<TKey, IMyNode<TKey, TValue>>())
+        {
+        }
+
+        public TValue Value { get; set; }
     }
 }
